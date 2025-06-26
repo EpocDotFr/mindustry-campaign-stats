@@ -1,6 +1,6 @@
 # Mindustry Campaign Stats
 
-Python API and CLI tool to read [Parkitect](https://www.themeparkitect.com/)'s blueprints metadata.
+Python API and CLI tool to read [Mindustry](https://mindustrygame.github.io/)'s campaign global stats.
 
 ![Python versions](https://img.shields.io/pypi/pyversions/mindustry-campaign-stats.svg) ![Version](https://img.shields.io/pypi/v/mindustry-campaign-stats.svg) ![License](https://img.shields.io/pypi/l/mindustry-campaign-stats.svg)
 
