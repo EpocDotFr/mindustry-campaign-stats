@@ -17,6 +17,8 @@ VERSION = None  # Pulled from mindustry_campaign_stats/__version__.py
 
 REQUIRED = [
     'tabulate~=0.9',
+    'mutf8~=1.0',
+    'py-ubjson~=0.16',
 ]
 
 EXTRAS = {

@@ -1,5 +1,19 @@
+from pprint import pprint
+
 from mindustry_campaign_stats.__version__ import __version__
+from mindustry_campaign_stats.settings import load
 from argparse import ArgumentParser
+from sys import stdout
+from enum import Enum
+import json
+
+
+class Planets(Enum):
+    Serpulo = 'serpulo'
+    Erekir = 'erekir'
+
+    def __str__(self):
+        return self.value
 
 
 def cli() -> None:
@@ -8,17 +22,15 @@ def cli() -> None:
     )
 
     arg_parser.add_argument(
-        'planet',
-        help='Which campaign to retrieve stats for',
-        choices=['serpulo', 'erekir'],
-        default='serpulo',
-        nargs='?'
+        'filename',
+        help='The settings.bin file to load'
     )
 
     arg_parser.add_argument(
-        'settings',
-        help='The settings.bin file to load. Do not set to enable auto discovery',
-        nargs='?'
+        'planet',
+        help='Which campaign to retrieve stats for',
+        type=Planets,
+        choices=list(Planets)
     )
 
     arg_parser.add_argument(
@@ -46,3 +58,15 @@ def cli() -> None:
     )
 
     args = arg_parser.parse_args()
+
+    with open(args.filename, 'rb') as fp:
+        pprint(load(fp))
+        # json.dump(
+        #     load(fp),
+        #     stdout,
+        #     indent=2 if args.pretty else None,
+        #     separators=None if args.pretty else (',', ':')
+        # )
+
+
+__all__ = ['load']
