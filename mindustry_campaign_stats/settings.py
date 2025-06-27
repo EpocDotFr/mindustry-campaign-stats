@@ -1,8 +1,7 @@
-import ubjson
+from typing import BinaryIO, Union, Dict
 from mutf8 import decode_modified_utf8
-from collections import OrderedDict
-from typing import BinaryIO, Any
 from enum import Enum
+import ubjson
 import struct
 
 
@@ -49,7 +48,7 @@ class SettingsReader:
     def read_bytes(self, size: int) -> bytes:
         return self.fp.read(size)
 
-    def unpack(self, fmt: str, size: int = 1) -> Any:
+    def unpack(self, fmt: str, size: int = 1) -> Union[bool, float, int, bytes]:
         ret = struct.unpack(
             f'>{fmt}',
             self.read_bytes(size)
@@ -58,14 +57,14 @@ class SettingsReader:
         return ret[0] if len(ret) == 1 else ret
 
 
-def load(fp: BinaryIO) -> OrderedDict:
-    settings = OrderedDict()
+def load(fp: BinaryIO) -> Dict:
+    settings = {}
     reader = SettingsReader(fp)
 
     fields_count = reader.read_int32()
 
     if fields_count <= 0:
-        raise ValueError('Invalid settings: fields count is <= 0')
+        raise ValueError('Invalid settings files: fields count is lower than or equal to 0')
 
     for _ in range(fields_count):
         field_name = reader.read_mutf8()
@@ -74,7 +73,7 @@ def load(fp: BinaryIO) -> OrderedDict:
         try:
             field_type = SettingType(field_type_id)
         except ValueError:
-            raise ValueError('Unhandled field type ID "{}" for field "{}"'.format(field_type_id, field_name)) from None
+            raise ValueError(f'Unhandled field type ID "{field_type_id}" for field "{field_name}"') from None
 
         if field_type == SettingType.Boolean:
             settings[field_name] = reader.read_boolean()
@@ -89,13 +88,14 @@ def load(fp: BinaryIO) -> OrderedDict:
         elif field_type == SettingType.Binary:
             settings[field_name] = reader.read_bytes(reader.read_int32())
 
+            # If it looks like ubjson data, try to read it
             if settings[field_name].startswith((b'{', b'[')):
                 try:
-                    settings[field_name] = ubjson.loadb(settings[field_name], object_pairs_hook=OrderedDict)
+                    settings[field_name] = ubjson.loadb(settings[field_name])
                 except:
                     pass
 
-    if fp.read():
+    if reader.read_bytes(1):
         raise ValueError('Expected EOF, but got something to read')
 
     return settings

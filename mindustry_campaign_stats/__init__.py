@@ -1,19 +1,11 @@
-from pprint import pprint
-
 from mindustry_campaign_stats.__version__ import __version__
+from mindustry_campaign_stats.constants import Planet
 from mindustry_campaign_stats.settings import load
+from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser
+from tabulate import tabulate
 from sys import stdout
-from enum import Enum
 import json
-
-
-class Planets(Enum):
-    Serpulo = 'serpulo'
-    Erekir = 'erekir'
-
-    def __str__(self):
-        return self.value
 
 
 def cli() -> None:
@@ -29,8 +21,8 @@ def cli() -> None:
     arg_parser.add_argument(
         'planet',
         help='Which campaign to retrieve stats for',
-        type=Planets,
-        choices=list(Planets)
+        type=Planet,
+        choices=list(Planet)
     )
 
     arg_parser.add_argument(
@@ -41,32 +33,27 @@ def cli() -> None:
 
     arg_parser.add_argument(
         '-j', '--json',
-        help='Output JSON instead of tabular data',
-        action='store_true'
-    )
-
-    arg_parser.add_argument(
-        '-p', '--pretty',
-        help='Pretty-print JSON output',
+        help='Output JSON instead of table',
         action='store_true'
     )
 
     arg_parser.add_argument(
         '-r', '--refresh',
-        help='Automatically refresh data on file change',
+        help='Listen for file changes',
         action='store_true'
     )
 
     args = arg_parser.parse_args()
 
     with open(args.filename, 'rb') as fp:
-        pprint(load(fp))
-        # json.dump(
-        #     load(fp),
-        #     stdout,
-        #     indent=2 if args.pretty else None,
-        #     separators=None if args.pretty else (',', ':')
-        # )
+        settings = load(fp)
+
+    json.dump(
+        compute(settings, args.planet),
+        stdout,
+        indent=None,
+        separators=(',', ':')
+    )
 
 
-__all__ = ['load']
+__all__ = ['load', 'compute']
