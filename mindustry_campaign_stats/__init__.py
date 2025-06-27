@@ -3,6 +3,7 @@ from mindustry_campaign_stats.constants import Planet
 from mindustry_campaign_stats.settings import load
 from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser
+from datetime import datetime
 from tabulate import tabulate
 from sys import stdout
 import json
@@ -48,12 +49,19 @@ def cli() -> None:
     with open(args.filename, 'rb') as fp:
         settings = load(fp)
 
-    json.dump(
-        compute(settings, args.planet),
-        stdout,
-        indent=None,
-        separators=(',', ':')
-    )
+    stats = compute(settings, args.planet)
+
+    date: datetime = stats.get('date')
+    planet: str = stats.get('planet')
+
+    stdout.write(f'{date} - {planet}\n')
+
+    # json.dump(
+    #     compute(settings, args.planet),
+    #     stdout,
+    #     indent=None,
+    #     separators=(',', ':')
+    # )
 
 
 __all__ = ['load', 'compute']

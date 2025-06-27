@@ -40,3 +40,28 @@ SectorsName = {
     260: 'Mycelia Bastion',
     264: 'Geothermal Stronghold',
 }
+
+ItemsId = [
+    'beryllium',
+    'blast-compound',
+    'carbide',
+    'coal',
+    'copper',
+    'dormant-cyst',
+    'fissile-matter',
+    'graphite',
+    'lead',
+    'metaglass',
+    'oxide',
+    'phase-fabric',
+    'plastanium',
+    'pyratite',
+    'sand',
+    'scrap',
+    'silicon',
+    'spore-pod',
+    'surge-alloy',
+    'thorium',
+    'titanium',
+    'tungsten',
+]

@@ -18,32 +18,43 @@ class StatsBuilder:
 
 	def build_sectors(self) -> Dict:
 		return {
-			42: {
-				'availability': ['copper', 'titanium', 'thorium'],
+			sector_id: {
+				'availability': sector_info.get('resources', []),
 				'storage': {
-					'capacity': 16000,
-					'items': {
-						'copper': 1520,
-						'titanium': 2000,
-					}
+					'capacity': sector_info.get('storageCapacity', 0),
+					'items': sector_info.get('items', {})
 				},
 				'production': {
-					'copper': 5000,
-					'titanium': 5000,
+					item_name: item_info.get('mean', 0.0) for item_name, item_info in sector_info.get('rawProduction', {}).items() if item_info.get('mean', 0.0) != 0
 				},
-				'imports': {
-					'copper': {
-						58: 500,
-						41: 200,
-					}
-				},
-				'exports': {
-					'copper': {
-						58: 500,
-						41: 200,
-					}
-				},
+				# 'imports': {
+				# 	'copper': {
+				# 		58: 500,
+				# 		41: 200,
+				# 	}
+				# },
+				# 'exports': {
+				# 	'copper': {
+				# 		58: 500,
+				# 		41: 200,
+				# 	}
+				# },
+			} for sector_id, sector_info in self.sectors_info.items()
+		}
+
+	def build_totals(self) -> Dict:
+		return {
+			'storage': {
+				'capacity': sum([sector_info.get('storageCapacity', 0) for sector_info in self.sectors_info.values()]),
+				'items': {
+					'copper': 1520,
+					'titanium': 2000,
+				}
 			},
+			'production': {
+				'copper': 5000,
+				'titanium': 5000,
+			}
 		}
 
 	def get_sectors_info(self) -> Dict:
@@ -72,20 +83,9 @@ def compute(settings: Dict, planet: Planet) -> Dict:
 
 	return {
 		'date': datetime.now(timezone.utc).isoformat(timespec='seconds'),
+		'planet': builder.planet.value,
 		'sectors': builder.build_sectors(),
-		'totals': {
-			'storage': {
-				'capacity': 500000,
-				'items': {
-					'copper': 1520,
-					'titanium': 2000,
-				}
-			},
-			'production': {
-				'copper': 5000,
-				'titanium': 5000,
-			}
-		}
+		'totals': builder.build_totals(),
 	}
 
 
