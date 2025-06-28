@@ -19,6 +19,7 @@ REQUIRED = [
     'tabulate~=0.9',
     'mutf8~=1.0',
     'py-ubjson~=0.16',
+    'humanize~=4.12'
 ]
 
 EXTRAS = {

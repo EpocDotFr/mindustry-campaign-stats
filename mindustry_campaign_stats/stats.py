@@ -1,33 +1,34 @@
-from mindustry_campaign_stats.constants import Planet
-from dataclasses import dataclass, asdict
+from mindustry_campaign_stats.constants import Planet, SectorsName
 from datetime import datetime, timezone
 from typing import Dict, List, Union
+import dataclasses
 import re
 
 
-@dataclass
+@dataclasses.dataclass
 class StorageStats:
 	capacity: int
 	items: Dict[str, int]
 
 
-@dataclass
+@dataclasses.dataclass
 class HasStorageAndProductionStatsMixin:
 	storage: StorageStats
 	production: Dict[str, int]
 
 
-@dataclass
+@dataclasses.dataclass
 class SectorStats(HasStorageAndProductionStatsMixin):
+	name: str
 	availability: List[str]
 
 
-@dataclass
+@dataclasses.dataclass
 class TotalsStats(HasStorageAndProductionStatsMixin):
 	pass
 
 
-@dataclass
+@dataclasses.dataclass
 class Stats:
 	date: datetime
 	planet: Planet
@@ -35,7 +36,7 @@ class Stats:
 	totals: TotalsStats
 
 	def to_json(self) -> Dict:
-		ret = asdict(self)
+		ret = dataclasses.asdict(self)
 
 		ret['date'] = ret['date'].isoformat()
 		ret['planet'] = ret['planet'].value
@@ -58,6 +59,7 @@ class StatsBuilder:
 	def build_sectors(self) -> Dict:
 		return {
 			sector_id: SectorStats(
+				name=SectorsName.get(sector_id, sector_id),
 				availability=sector_info.get('resources', []),
 				storage=StorageStats(
 					capacity=sector_info.get('storageCapacity', 0),
