@@ -1,15 +1,16 @@
 from mindustry_campaign_stats.__version__ import __version__
+from mindustry_campaign_stats.presenters import jsonl, table
 from mindustry_campaign_stats.constants import Planet
 from mindustry_campaign_stats.settings import load
 from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser
-from datetime import datetime
-from tabulate import tabulate
 from sys import stdout
-import json
+import locale
 
 
 def cli() -> None:
+    locale.setlocale(locale.LC_ALL, '')
+
     arg_parser = ArgumentParser(
         description='CLI tool to read Mindustry\'s campaign global stats.'
     )
@@ -34,7 +35,7 @@ def cli() -> None:
 
     arg_parser.add_argument(
         '-j', '--json',
-        help='Output JSON instead of table',
+        help='Output JSON instead of a table',
         action='store_true'
     )
 
@@ -47,21 +48,13 @@ def cli() -> None:
     args = arg_parser.parse_args()
 
     with open(args.filename, 'rb') as fp:
-        settings = load(fp)
+        settings_parsed = load(fp)
 
-    stats = compute(settings, args.planet)
+    computed_stats = compute(settings_parsed, args.planet)
 
-    date: datetime = stats.get('date')
-    planet: str = stats.get('planet')
-
-    stdout.write(f'{date} - {planet}\n')
-
-    # json.dump(
-    #     compute(settings, args.planet),
-    #     stdout,
-    #     indent=None,
-    #     separators=(',', ':')
-    # )
+    stdout.write(
+        jsonl(computed_stats) if args.json else table(computed_stats)
+    )
 
 
-__all__ = ['load', 'compute']
+__all__ = ['load', 'compute', 'jsonl', 'table']

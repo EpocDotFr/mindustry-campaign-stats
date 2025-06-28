@@ -1,11 +1,11 @@
 from typing import BinaryIO, Union, Dict
 from mutf8 import decode_modified_utf8
-from enum import Enum
+from enum import IntEnum
 import ubjson
 import struct
 
 
-class SettingType(Enum):
+class SettingType(IntEnum):
     Boolean = 0
     Int = 1
     Long = 2
@@ -57,7 +57,7 @@ class SettingsReader:
         return ret[0] if len(ret) == 1 else ret
 
 
-def load(fp: BinaryIO) -> Dict:
+def load(fp: BinaryIO) -> Dict[str, Union[bool, float, int, bytes, str]]:
     settings = {}
     reader = SettingsReader(fp)
 
