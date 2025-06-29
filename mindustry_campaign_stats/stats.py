@@ -1,4 +1,4 @@
-from mindustry_campaign_stats.constants import Planet, SectorsName
+from mindustry_campaign_stats.constants import Planet, SectorsName, ItemsId
 from datetime import datetime, timezone
 from typing import Dict, List, Union
 import dataclasses
@@ -35,7 +35,7 @@ class Stats:
 	sectors: Dict[int, SectorStats]
 	totals: TotalsStats
 
-	def to_json(self) -> Dict:
+	def to_dict(self) -> Dict:
 		ret = dataclasses.asdict(self)
 
 		ret['date'] = ret['date'].isoformat()
@@ -59,14 +59,14 @@ class StatsBuilder:
 	def build_sectors(self) -> Dict:
 		return {
 			sector_id: SectorStats(
-				name=SectorsName.get(sector_id, sector_id),
+				name=SectorsName.get(self.planet).get(sector_id, sector_id),
 				availability=sector_info.get('resources', []),
 				storage=StorageStats(
 					capacity=sector_info.get('storageCapacity', 0),
 					items=sector_info.get('items', {})
 				),
 				production={
-					item_name: item_info.get('mean', 0.0) for item_name, item_info in sector_info.get('rawProduction', {}).items() if item_info.get('mean', 0.0) != 0
+					item_id: item_info.get('mean', 0) for item_id, item_info in sector_info.get('rawProduction', {}).items() if item_info.get('mean', 0) != 0
 				}
 			) for sector_id, sector_info in self.sectors_info.items()
 		}
@@ -74,15 +74,19 @@ class StatsBuilder:
 	def build_totals(self) -> TotalsStats:
 		return TotalsStats(
 			storage=StorageStats(
-				capacity=sum([sector_info.get('storageCapacity', 0) for sector_info in self.sectors_info.values()]),
-				items={ # TODO
-					'copper': 1520,
-					'titanium': 2000,
+				capacity=sum([
+					sector_info.get('storageCapacity', 0) for sector_info in self.sectors_info.values()
+				]),
+				items={
+					item_id: sum([
+						sector_info.get('items', {}).get(item_id) for sector_info in self.sectors_info.values() if sector_info.get('items', {}).get(item_id, 0) != 0
+					]) for item_id in ItemsId.get(self.planet)
 				}
 			),
-			production={ # TODO
-				'copper': 5000,
-				'titanium': 5000,
+			production={
+				item_id: sum([
+					sector_info.get('rawProduction', {}).get(item_id, {}).get('mean') for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) != 0
+				]) for item_id in ItemsId.get(self.planet)
 			}
 		)
 

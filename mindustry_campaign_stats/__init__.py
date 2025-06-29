@@ -5,12 +5,9 @@ from mindustry_campaign_stats.settings import load
 from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser
 from sys import stdout
-import locale
 
 
 def cli() -> None:
-    locale.setlocale(locale.LC_ALL, '')
-
     arg_parser = ArgumentParser(
         description='CLI tool to read Mindustry\'s campaign global stats.'
     )
