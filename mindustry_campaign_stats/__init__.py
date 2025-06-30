@@ -1,5 +1,5 @@
+from mindustry_campaign_stats.presenters import to_json, to_table
 from mindustry_campaign_stats.__version__ import __version__
-from mindustry_campaign_stats.presenters import jsonl, table
 from mindustry_campaign_stats.constants import Planet
 from mindustry_campaign_stats.settings import load
 from mindustry_campaign_stats.stats import compute
@@ -37,6 +37,12 @@ def cli() -> None:
     )
 
     arg_parser.add_argument(
+        '-p', '--pretty',
+        help='Pretty-print JSON output',
+        action='store_true'
+    )
+
+    arg_parser.add_argument(
         '-r', '--refresh',
         help='Listen for file changes',
         action='store_true'
@@ -50,7 +56,7 @@ def cli() -> None:
     computed_stats = compute(settings_parsed, args.planet)
 
     stdout.write(
-        jsonl(computed_stats) if args.json else table(computed_stats)
+        to_json(computed_stats, args.pretty) if args.json else to_table(computed_stats)
     )
 
 

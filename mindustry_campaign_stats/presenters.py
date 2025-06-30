@@ -6,7 +6,7 @@ import humanize
 import json
 
 
-def table(computed_stats: Stats) -> str:
+def to_table(computed_stats: Stats) -> str:
     date = computed_stats.date.astimezone().strftime('%c')
 
     table_headers = ['Sector', 'Stat']
@@ -23,7 +23,7 @@ def table(computed_stats: Stats) -> str:
 
         ret.extend([
             '\n'.join([
-                '✅' if item_id in sector.availability else '❌',
+                '✓' if item_id in sector.availability else '𐄂',
                 humanize.metric(sector.storage.items.get(item_id, 0), precision=1),
                 humanize.metric(sector.production.get(item_id, 0), precision=1)
             ]) for item_id in ItemsId.get(computed_stats.planet)
@@ -63,12 +63,12 @@ def table(computed_stats: Stats) -> str:
     return f'{date} - {computed_stats.planet.name}\n{table_str}\n'
 
 
-def jsonl(computed_stats: Stats) -> str:
+def to_json(computed_stats: Stats, pretty: bool) -> str:
     return json.dumps(
         computed_stats.to_dict(),
-        indent=None,
-        separators=(',', ':')
+        indent=2 if pretty else None,
+        separators=None if pretty else (',', ':')
     ) + '\n'
 
 
-__all__ = ['table', 'jsonl']
+__all__ = ['to_table', 'to_json']
