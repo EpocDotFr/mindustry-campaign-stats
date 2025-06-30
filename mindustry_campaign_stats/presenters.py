@@ -18,12 +18,12 @@ def to_table(computed_stats: Stats) -> str:
     def row_data(sector: SectorStats) -> List:
         ret = [
             sector.name,
-            f'Available\nStorage (max. {humanize.metric(sector.storage.capacity, precision=1)})\nProduction (/m)'
+            f'Available\nStorage ({humanize.metric(sector.storage.capacity, precision=1)})\nProduction (/m)'
         ]
 
         ret.extend([
             '\n'.join([
-                '✓' if item_id in sector.availability else '𐄂',
+                '✓' if item_id in sector.availability else '✕',
                 humanize.metric(sector.storage.items.get(item_id, 0), precision=1),
                 humanize.metric(sector.production.get(item_id, 0), precision=1)
             ]) for item_id in ItemsId.get(computed_stats.planet)
@@ -34,7 +34,7 @@ def to_table(computed_stats: Stats) -> str:
     def totals_row_data(totals: TotalsStats) -> List:
         ret = [
             'Totals',
-            f'Storage (max. {humanize.metric(computed_stats.totals.storage.capacity, precision=1)})\nProduction (/m)',
+            f'Storage ({humanize.metric(computed_stats.totals.storage.capacity, precision=1)})\nProduction (/m)',
         ]
 
         ret.extend([
