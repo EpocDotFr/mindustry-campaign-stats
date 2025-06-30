@@ -38,6 +38,32 @@ pip install .
 > [!NOTE]
 > TODO
 
+## `settings.bin` format
+
+This file is designed much like a persistent key-value store. It is used to store both user settings and campaigns-related
+data. It is formatted as follows:
+
+- 4 bytes (int32) - Number of fields to read (`fields_count`)
+- Fields sequence (based on `fields_count`):
+  - 2 bytes (uint16) - Length of the field name (`field_name_length`)
+  - `field_name_length` bytes - [MUTF-8](https://en.wikipedia.org/wiki/UTF-8#Modified_UTF-8)-encoded field name
+  - 1 byte (int8) - Field type ID (`field_type_id`)
+  - `field_type_id` value determines how to read the next bytes:
+    - `0`:
+      - 1 byte (boolean) - A boolean value
+    - `1`:
+      - 4 bytes (int32) - A 32 bits integer
+    - `2`:
+      - 8 bytes (int64) - A 64 bits integer
+    - `3`:
+      - 4 bytes (float) - A single-precision floating-point number
+    - `4`:
+      - 2 bytes (uint16) - Length of the field value (`field_value_length`)
+      - `field_value_length` bytes - An [MUTF-8](https://en.wikipedia.org/wiki/UTF-8#Modified_UTF-8)-encoded string
+    - `5`:
+      - 4 bytes (int32) - Length of the field value (`field_value_length`)
+      - `field_value_length` bytes - A binary value. Most likely [UBJSON](https://en.wikipedia.org/wiki/UBJSON) data
+
 ## References
 
   - [Settings.java](https://github.com/Anuken/Arc/blob/master/arc-core/src/arc/Settings.java)
