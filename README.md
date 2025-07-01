@@ -41,7 +41,7 @@ pip install .
 ## `settings.bin` format
 
 This file is designed much like a persistent key-value store. It is used to store both user settings and campaigns-related
-data. It is formatted as follows:
+data. It is formatted as follows (everything is big-endian):
 
 - 4 bytes (int32) - Number of fields to read (`fields_count`)
 - Fields sequence (based on `fields_count`):
