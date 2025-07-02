@@ -16,18 +16,40 @@ def to_table(computed_stats: Stats) -> str:
     ])
 
     def row_data(sector: SectorStats) -> List:
-        ret = [
-            sector.name,
-            f'Available\nStorage ({humanize.metric(sector.storage.capacity, precision=1)})\nProduction (/m)'
+        stat_labels_cell = [
+            'Available',
+            f'Storage ({humanize.metric(sector.storage.capacity, precision=1)})',
+            'Production (/m)'
         ]
 
-        ret.extend([
-            '\n'.join([
+        if sector.imports:
+            stat_labels_cell.append('Imports (/m)')
+
+        if sector.exports:
+            stat_labels_cell.append('Exports (/m)')
+
+        ret = [
+            sector.name,
+            '\n'.join(stat_labels_cell)
+        ]
+
+        for item_id in ItemsId.get(computed_stats.planet):
+            stat_values_cell = [
                 '✓' if item_id in sector.availability else '✕',
                 humanize.metric(sector.storage.items.get(item_id, 0), precision=1),
-                humanize.metric(sector.production.get(item_id, 0), precision=1)
-            ]) for item_id in ItemsId.get(computed_stats.planet)
-        ])
+                humanize.metric(sector.production.get(item_id, 0), precision=2)
+            ]
+
+            if item_id in sector.imports:
+                stat_values_cell.append(humanize.metric(sector.imports.get(item_id, 0), precision=2))
+
+
+            if item_id in sector.exports:
+                stat_values_cell.append(humanize.metric(sector.exports.get(item_id, 0), precision=2))
+
+            ret.append(
+                '\n'.join(stat_values_cell)
+            )
 
         return ret
 
@@ -40,7 +62,7 @@ def to_table(computed_stats: Stats) -> str:
         ret.extend([
             '\n'.join([
                 humanize.metric(totals.storage.items.get(item_id, 0), precision=1),
-                humanize.metric(totals.production.get(item_id, 0), precision=1)
+                humanize.metric(totals.production.get(item_id, 0), precision=2)
             ]) for item_id in ItemsId.get(computed_stats.planet)
         ])
 
