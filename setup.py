@@ -19,7 +19,8 @@ REQUIRED = [
     'tabulate~=0.9',
     'mutf8~=1.0',
     'py-ubjson~=0.16',
-    'humanize~=4.12'
+    'humanize~=4.12',
+    'watchdog~=6.0',
 ]
 
 EXTRAS = {
@@ -128,7 +129,7 @@ setup(
     license='DBAD',
     entry_points={
         'console_scripts': [
-            'mindustry-campaign-stats = mindustry_campaign_stats:cli',
+            'mindustry-campaign-stats = mindustry_campaign_stats.cli:cli',
         ]
     },
     classifiers=CLASSIFIERS,
