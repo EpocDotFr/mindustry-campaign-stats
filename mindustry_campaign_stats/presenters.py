@@ -12,7 +12,7 @@ def to_table(computed_stats: Stats) -> str:
     table_headers = ['Sector', 'Stat']
 
     table_headers.extend([
-        item_id.replace('-', ' ').title() for item_id in ItemsId.get(computed_stats.planet)
+        item_id.replace('-', '\n').title() for item_id in ItemsId.get(computed_stats.planet)
     ])
 
     def row_data(sector: SectorStats) -> List:
