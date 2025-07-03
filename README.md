@@ -30,8 +30,39 @@ pip install .
 
 ### API
 
-> [!NOTE]
-> TODO
+The API consists of:
+
+  - A `load()` function, which reads data from the given binary file-like object and returns the raw parsed data as
+    a dictionary
+  - A `compute()` function, which transforms the aforementioned dictionary to a
+    [`Stats`](https://github.com/EpocDotFr/mindustry-campaign-stats/blob/master/mindustry_campaign_stats/stats.py) instance
+  - Utility functions `to_table` and `to_jsonl()`, both taking a `Stats` instance. They return a human-readable ASCII
+    table representation of the data and the data formatted to JSON Lines, respectively
+  - A `Planet` enum (`Serpulo`, `Erekir`)
+
+```python
+import mindustry_campaign_stats
+from pprint import pprint
+
+try:
+    with open('settings.bin', 'rb') as fp: # Note it's opened in binary mode
+        raw_settings = mindustry_campaign_stats.load(fp)
+
+        pprint(raw_settings)
+
+        computed = mindustry_campaign_stats.compute(
+            raw_settings,
+            mindustry_campaign_stats.Planet.Erekir
+        )
+
+        print(computed.totals.storage.capacity)
+
+        print(
+          to_jsonl(computed, pretty=True)
+        )
+except Exception as e:
+    print(e)
+```
 
 ### CLI
 

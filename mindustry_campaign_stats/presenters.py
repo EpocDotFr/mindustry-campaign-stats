@@ -120,12 +120,9 @@ def to_table(computed_stats: Stats) -> str:
     return f'{date} - {computed_stats.planet.name}\n{table_str}\n'
 
 
-def to_json(computed_stats: Stats, pretty: bool) -> str:
+def to_jsonl(computed_stats: Stats, pretty: bool) -> str:
     return json.dumps(
         computed_stats.to_dict(),
         indent=2 if pretty else None,
         separators=None if pretty else (',', ':')
     ) + '\n'
-
-
-__all__ = ['to_table', 'to_json']

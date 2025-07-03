@@ -1,5 +1,5 @@
 from watchdog.events import PatternMatchingEventHandler, FileModifiedEvent
-from mindustry_campaign_stats.presenters import to_json, to_table
+from mindustry_campaign_stats.presenters import to_jsonl, to_table
 from mindustry_campaign_stats.__version__ import __version__
 from mindustry_campaign_stats.constants import Planet
 from mindustry_campaign_stats.settings import load
@@ -26,7 +26,7 @@ def show(args: Namespace) -> None:
     computed_stats = compute(settings_parsed, args.planet)
 
     stdout.write(
-        to_json(computed_stats, args.pretty if not args.refresh else False) if args.json else to_table(computed_stats)
+        to_jsonl(computed_stats, args.pretty if not args.refresh else False) if args.json else to_table(computed_stats)
     )
 
 
@@ -97,6 +97,3 @@ def cli() -> None:
             observer.stop()
 
         observer.join()
-
-
-__all__ = ['cli']

@@ -99,6 +99,3 @@ def load(fp: BinaryIO) -> Dict[str, Union[bool, float, int, bytes, str]]:
         raise ValueError('Expected EOF, but got something to read')
 
     return settings
-
-
-__all__ = ['load']

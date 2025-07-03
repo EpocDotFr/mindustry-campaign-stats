@@ -125,6 +125,3 @@ def compute(settings: Dict[str, Union[bool, float, int, bytes, str]], planet: Pl
 		sectors=builder.build_sectors(),
 		totals=builder.build_totals()
 	)
-
-
-__all__ = ['compute', 'Stats']
