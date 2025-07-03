@@ -45,7 +45,7 @@ def to_table(computed_stats: Stats) -> str:
     table_headers = ['Sector', 'Stat']
 
     table_headers.extend([
-        item_id.replace('-', '\n').title() for item_id in ItemsId.get(computed_stats.planet)
+        item_id.replace('-', '\n').title() for item_id in ItemsId.get(computed_stats.planet) if computed_stats.totals.storage.items.get(item_id, 0) != 0 and computed_stats.totals.production.get(item_id, 0) != 0
     ])
 
     def row_data(sector: SectorStats) -> List:
@@ -67,6 +67,9 @@ def to_table(computed_stats: Stats) -> str:
         ]
 
         for item_id in ItemsId.get(computed_stats.planet):
+            if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.production.get(item_id, 0) == 0:
+                continue
+
             stat_values_cell = [
                 '✓' if item_id in sector.availability else '✕',
                 humanize_number(sector.storage.items.get(item_id, 0)),
@@ -95,7 +98,7 @@ def to_table(computed_stats: Stats) -> str:
             '\n'.join([
                 humanize_number(totals.storage.items.get(item_id, 0)),
                 humanize_number(totals.production.get(item_id, 0))
-            ]) for item_id in ItemsId.get(computed_stats.planet)
+            ]) for item_id in ItemsId.get(computed_stats.planet) if computed_stats.totals.storage.items.get(item_id, 0) != 0 and computed_stats.totals.production.get(item_id, 0) != 0
         ])
 
         return ret
