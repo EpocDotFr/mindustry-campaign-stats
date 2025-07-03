@@ -37,7 +37,7 @@ The API consists of:
   - A `compute()` function, which transforms the aforementioned dictionary to a
     [`Stats`](https://github.com/EpocDotFr/mindustry-campaign-stats/blob/master/mindustry_campaign_stats/stats.py) instance
   - Utility functions `to_table` and `to_jsonl()`, both taking a `Stats` instance. They return a human-readable ASCII
-    table representation of the data and the data formatted to JSON Lines, respectively
+    table representation of the data and the data formatted to a JSON Line, respectively
   - A `Planet` enum (`Serpulo`, `Erekir`)
 
 ```python
