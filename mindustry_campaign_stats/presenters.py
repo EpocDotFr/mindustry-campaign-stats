@@ -1,9 +1,42 @@
-from mindustry_campaign_stats.constants import ItemsId
 from mindustry_campaign_stats.stats import Stats, SectorStats, TotalsStats
+from mindustry_campaign_stats.constants import ItemsId
+from math import log10, floor
 from tabulate import tabulate
 from typing import List
-import humanize
 import json
+
+
+def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
+    powers = [10 ** x for x in (12, 9, 6, 3, 0, -3, -6, -9)]
+    human_powers = ['T', 'B', 'M', 'k', '', 'm', 'µ', 'n']
+    is_negative = False
+    suffix = ''
+
+    if not isinstance(value, float):
+        value = float(value)
+    if value < 0:
+        is_negative = True
+        value = abs(value)
+    if value == 0:
+        decimal_places = max(0, significant_digits - 1)
+    elif .001 <= value < 1:
+        decimal_places = max(0, significant_digits - int(floor(log10(value))) - 1)
+    else:
+        p = next((x for x in powers if value >= x), 10 ** -9)
+        i = powers.index(p)
+        value = value / p
+        before = int(log10(value)) + 1
+        decimal_places = max(0, significant_digits - before)
+        suffix = human_powers[i]
+
+    return_value = ("%." + str(decimal_places) + "f") % value
+
+    if is_negative:
+        return_value = "-" + return_value
+    if strip_trailing_zeros and '.' in return_value:
+        return_value = return_value.rstrip('0').rstrip('.')
+
+    return f'{return_value} {suffix}'
 
 
 def to_table(computed_stats: Stats) -> str:
@@ -18,7 +51,7 @@ def to_table(computed_stats: Stats) -> str:
     def row_data(sector: SectorStats) -> List:
         stat_labels_cell = [
             'Available',
-            f'Storage ({humanize.metric(sector.storage.capacity, precision=1)})',
+            f'Storage ({humanize_number(sector.storage.capacity)})',
             'Production (/s)'
         ]
 
@@ -36,16 +69,15 @@ def to_table(computed_stats: Stats) -> str:
         for item_id in ItemsId.get(computed_stats.planet):
             stat_values_cell = [
                 '✓' if item_id in sector.availability else '✕',
-                humanize.metric(sector.storage.items.get(item_id, 0), precision=1),
-                humanize.metric(sector.production.get(item_id, 0), precision=2)
+                humanize_number(sector.storage.items.get(item_id, 0)),
+                humanize_number(sector.production.get(item_id, 0))
             ]
 
             if item_id in sector.imports:
-                stat_values_cell.append(humanize.metric(sector.imports.get(item_id, 0), precision=2))
-
+                stat_values_cell.append(humanize_number(sector.imports.get(item_id, 0)))
 
             if item_id in sector.exports:
-                stat_values_cell.append(humanize.metric(sector.exports.get(item_id, 0), precision=2))
+                stat_values_cell.append(humanize_number(sector.exports.get(item_id, 0)))
 
             ret.append(
                 '\n'.join(stat_values_cell)
@@ -56,13 +88,13 @@ def to_table(computed_stats: Stats) -> str:
     def totals_row_data(totals: TotalsStats) -> List:
         ret = [
             'Totals',
-            f'Storage ({humanize.metric(computed_stats.totals.storage.capacity, precision=1)})\nProduction (/s)',
+            f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nProduction (/s)',
         ]
 
         ret.extend([
             '\n'.join([
-                humanize.metric(totals.storage.items.get(item_id, 0), precision=1),
-                humanize.metric(totals.production.get(item_id, 0), precision=2)
+                humanize_number(totals.storage.items.get(item_id, 0)),
+                humanize_number(totals.production.get(item_id, 0))
             ]) for item_id in ItemsId.get(computed_stats.planet)
         ])
 

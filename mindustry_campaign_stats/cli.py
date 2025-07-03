@@ -6,22 +6,19 @@ from mindustry_campaign_stats.settings import load
 from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser, Namespace
 from watchdog.observers import Observer
+from time import sleep
 from sys import stdout
 import subprocess
 import platform
 import os
 
 
-def clear_screen() -> None:
-    if platform.system() == 'Windows' and platform.release() not in ('10', '11', 'post11'):
-        subprocess.run('cls')
-    else:
-        stdout.write("\033[H\033[2J")
-
-
 def show(args: Namespace) -> None:
     if not args.json and args.refresh:
-        clear_screen()
+        if platform.system() == 'Windows' and platform.release() not in ('10', '11', 'post11'):
+            subprocess.run('cls')
+        else:
+            stdout.write("\033[H\033[2J")
 
     with open(args.filename, 'rb') as fp:
         settings_parsed = load(fp)
@@ -94,9 +91,12 @@ def cli() -> None:
         observer.start()
 
         try:
-            observer.join()
+            while True:
+                sleep(1)
         except KeyboardInterrupt:
             observer.stop()
+
+        observer.join()
 
 
 __all__ = ['cli']
