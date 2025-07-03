@@ -52,14 +52,14 @@ def to_table(computed_stats: Stats) -> str:
         stat_labels_cell = [
             'Available',
             f'Storage ({humanize_number(sector.storage.capacity)})',
-            'Production (/s)'
+            'Production (/m)'
         ]
 
         if sector.imports:
-            stat_labels_cell.append('Imports (/s)')
+            stat_labels_cell.append('Imports (/m)')
 
         if sector.exports:
-            stat_labels_cell.append('Exports (/s)')
+            stat_labels_cell.append('Exports (/m)')
 
         ret = [
             sector.name,
@@ -88,7 +88,7 @@ def to_table(computed_stats: Stats) -> str:
     def totals_row_data(totals: TotalsStats) -> List:
         ret = [
             'Totals',
-            f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nProduction (/s)',
+            f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nProduction (/m)',
         ]
 
         ret.extend([

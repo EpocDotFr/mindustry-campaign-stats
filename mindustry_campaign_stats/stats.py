@@ -14,15 +14,15 @@ class StorageStats:
 @dataclasses.dataclass
 class StorageAndProductionStatsMixin:
 	storage: StorageStats
-	production: Dict[str, float]
+	production: Dict[str, float] # Per minute
 
 
 @dataclasses.dataclass
 class SectorStats(StorageAndProductionStatsMixin):
 	name: str
 	availability: List[str]
-	imports: Dict[str, float]
-	exports: Dict[str, float]
+	imports: Dict[str, float] # Per minute
+	exports: Dict[str, float] # Per minute
 
 
 @dataclasses.dataclass
@@ -68,13 +68,13 @@ class StatsBuilder:
 					items=sector_info.get('items', {})
 				),
 				production={
-					item_id: item_info.get('mean') for item_id, item_info in sector_info.get('rawProduction', {}).items() if item_info.get('mean', 0) != 0
+					item_id: item_info.get('mean') * 60 for item_id, item_info in sector_info.get('rawProduction', {}).items() if item_info.get('mean', 0) != 0
 				},
 				imports={
-					item_id: item_info.get('mean') for item_id, item_info in sector_info.get('import', {}).items() if item_info.get('mean', 0) != 0
+					item_id: item_info.get('mean') * 60 for item_id, item_info in sector_info.get('import', {}).items() if item_info.get('mean', 0) != 0
 				},
 				exports={
-					item_id: item_info.get('mean') for item_id, item_info in sector_info.get('export', {}).items() if item_info.get('mean', 0) != 0
+					item_id: item_info.get('mean') * 60 for item_id, item_info in sector_info.get('export', {}).items() if item_info.get('mean', 0) != 0
 				}
 			) for sector_id, sector_info in self.sectors_info.items()
 		}
@@ -87,13 +87,13 @@ class StatsBuilder:
 				]),
 				items={
 					item_id: sum([
-						sector_info.get('items', {}).get(item_id) for sector_info in self.sectors_info.values() if sector_info.get('items', {}).get(item_id, 0) != 0
+						sector_info.get('items').get(item_id) for sector_info in self.sectors_info.values() if sector_info.get('items', {}).get(item_id, 0) != 0
 					]) for item_id in ItemsId.get(self.planet)
 				}
 			),
 			production={
 				item_id: sum([
-					sector_info.get('rawProduction', {}).get(item_id, {}).get('mean') for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) != 0
+					sector_info.get('rawProduction').get(item_id).get('mean') * 60 for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) != 0
 				]) for item_id in ItemsId.get(self.planet)
 			}
 		)
