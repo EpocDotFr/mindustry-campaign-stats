@@ -14,7 +14,8 @@ class StorageStats:
 @dataclasses.dataclass
 class StorageAndProductionStatsMixin:
 	storage: StorageStats
-	production: Dict[str, float] # Per minute
+	rawProduction: Dict[str, float] # Per minute
+	netProduction: Dict[str, float] # Per minute
 
 
 @dataclasses.dataclass
@@ -67,8 +68,11 @@ class StatsBuilder:
 					capacity=sector_info.get('storageCapacity', 0),
 					items=sector_info.get('items', {})
 				),
-				production={
+				rawProduction={
 					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('rawProduction', {}).items()
+				},
+				netProduction={
+					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('production', {}).items()
 				},
 				imports={
 					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('import', {}).items()
@@ -91,9 +95,14 @@ class StatsBuilder:
 					]) for item_id in ItemsId.get(self.planet)
 				}
 			),
-			production={
+			rawProduction={
 				item_id: sum([
 					sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0)
+				]) for item_id in ItemsId.get(self.planet)
+			},
+			netProduction={
+				item_id: sum([
+					sector_info.get('production', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in self.sectors_info.values() if sector_info.get('production', {}).get(item_id, {}).get('mean', 0)
 				]) for item_id in ItemsId.get(self.planet)
 			}
 		)

@@ -34,11 +34,11 @@ The API consists of:
 
   - A `load()` function, which reads data from the given binary file-like object and returns the raw parsed data as
     a dictionary
-  - A `compute()` function, which transforms the aforementioned dictionary to a
+  - A `compute()` function, which transforms the above dictionary to a
     [`Stats`](https://github.com/EpocDotFr/mindustry-campaign-stats/blob/master/mindustry_campaign_stats/stats.py) instance
   - Utility functions `to_table` and `to_jsonl()`, both taking a `Stats` instance. They return a human-readable ASCII
-    table representation of the data and the data formatted to a JSON Line, respectively
-  - A `Planet` enum (`Serpulo`, `Erekir`)
+    table representation of the data and the data formatted to a [JSON Line](https://jsonlines.org/), respectively
+  - A `Planet` enum (`Serpulo`, `Erekir`) to be used with `compute()`
 
 ```python
 import mindustry_campaign_stats
@@ -48,18 +48,18 @@ try:
     with open('settings.bin', 'rb') as fp: # Note it's opened in binary mode
         raw_settings = mindustry_campaign_stats.load(fp)
 
-        pprint(raw_settings)
+    pprint(raw_settings)
 
-        computed = mindustry_campaign_stats.compute(
-            raw_settings,
-            mindustry_campaign_stats.Planet.Erekir
-        )
+    computed = mindustry_campaign_stats.compute(
+        raw_settings,
+        mindustry_campaign_stats.Planet.Erekir
+    )
 
-        print(computed.totals.storage.capacity)
+    print(computed.totals.storage.capacity)
 
-        print(
-          to_jsonl(computed, pretty=True)
-        )
+    print(
+      mindustry_campaign_stats.to_jsonl(computed, pretty=True)
+    )
 except Exception as e:
     print(e)
 ```
