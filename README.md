@@ -35,8 +35,20 @@ pip install .
 
 ### CLI
 
-> [!NOTE]
-> TODO
+In its simplest form, the CLI reads data from the given `settings.bin` filename, then writes a human-readable ASCII table
+of computed stats to `stdout`. Note you must choose between the `serpulo` or `erekir` campaign.
+
+```shell
+mindustry-campaign-stats settings.bin erekir
+```
+
+When the `--refresh` option is set, the CLI is running indefinitely, listening for modification in the given `settings.bin`
+file until it's terminated. This feature allows the table to be automatically updated in your terminal (screen is cleared
+before any update happens).
+
+The `--json` option switches output format to JSON, specifically [JSON Lines](https://jsonlines.org/). The `--pretty`
+option may be used to pretty-print the outputted JSON. When `--refresh` is set as well, the CLI will sequentially write
+a stream of JSON Lines. Note that `--pretty` is ignored in that case as it would break JSON Lines formatting.
 
 ## `settings.bin` format
 
