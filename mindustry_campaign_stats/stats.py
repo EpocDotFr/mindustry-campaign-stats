@@ -68,13 +68,13 @@ class StatsBuilder:
 					items=sector_info.get('items', {})
 				),
 				production={
-					item_id: item_info.get('mean') * 60 for item_id, item_info in sector_info.get('rawProduction', {}).items() if item_info.get('mean', 0) != 0
+					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('rawProduction', {}).items()
 				},
 				imports={
-					item_id: item_info.get('mean') * 60 for item_id, item_info in sector_info.get('import', {}).items() if item_info.get('mean', 0) != 0
+					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('import', {}).items()
 				},
 				exports={
-					item_id: item_info.get('mean') * 60 for item_id, item_info in sector_info.get('export', {}).items() if item_info.get('mean', 0) != 0
+					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('export', {}).items()
 				}
 			) for sector_id, sector_info in self.sectors_info.items()
 		}
@@ -87,13 +87,13 @@ class StatsBuilder:
 				]),
 				items={
 					item_id: sum([
-						sector_info.get('items').get(item_id) for sector_info in self.sectors_info.values() if sector_info.get('items', {}).get(item_id, 0) != 0
+						sector_info.get('items', {}).get(item_id, 0) for sector_info in self.sectors_info.values()
 					]) for item_id in ItemsId.get(self.planet)
 				}
 			),
 			production={
 				item_id: sum([
-					sector_info.get('rawProduction').get(item_id).get('mean') * 60 for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) != 0
+					sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0)
 				]) for item_id in ItemsId.get(self.planet)
 			}
 		)
