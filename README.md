@@ -36,8 +36,6 @@ The API consists of:
     a dictionary
   - A `compute()` function, which transforms the above dictionary to a
     [`Stats`](https://github.com/EpocDotFr/mindustry-campaign-stats/blob/master/mindustry_campaign_stats/stats.py) instance
-  - Utility functions `to_table` and `to_jsonl()`, both taking a `Stats` instance. They return a human-readable ASCII
-    table representation of the data and the data formatted to a [JSON Line](https://jsonlines.org/), respectively
   - A `Planet` enum (`Serpulo`, `Erekir`) to be used with `compute()`
 
 ```python
@@ -57,8 +55,8 @@ try:
 
     print(computed.totals.storage.capacity)
 
-    print(
-      mindustry_campaign_stats.to_jsonl(computed, pretty=True)
+    pprint(
+      computed.to_dict()
     )
 except Exception as e:
     print(e)
@@ -109,7 +107,9 @@ data. It is formatted as follows (everything is big-endian):
 
 ## References
 
-  - [Settings.java](https://github.com/Anuken/Arc/blob/master/arc-core/src/arc/Settings.java)
+  - [Settings.java](https://github.com/Anuken/Arc/blob/v149/arc-core/src/arc/Settings.java)
+  - [SectorPresets.java](https://github.com/Anuken/Mindustry/blob/v149/core/src/mindustry/content/SectorPresets.java)
+  - [Items.java](https://github.com/Anuken/Mindustry/blob/v149/core/src/mindustry/content/Items.java)
 
 ## Development
 

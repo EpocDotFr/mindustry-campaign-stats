@@ -1,16 +1,18 @@
 from watchdog.events import PatternMatchingEventHandler, FileModifiedEvent
-from mindustry_campaign_stats.presenters import to_jsonl, to_table
+from mindustry_campaign_stats.presenters import to_json, to_table
 from mindustry_campaign_stats.__version__ import __version__
 from mindustry_campaign_stats.constants import Planet
 from mindustry_campaign_stats.settings import load
 from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser, Namespace
 from watchdog.observers import Observer
+from rich.console import Console
 from time import sleep
-from sys import stdout
 import subprocess
 import platform
 import os
+
+console = Console()
 
 
 def show(args: Namespace) -> None:
@@ -18,16 +20,22 @@ def show(args: Namespace) -> None:
         if platform.system() == 'Windows' and platform.release() not in ('10', '11', 'post11'):
             subprocess.run('cls')
         else:
-            stdout.write("\033[H\033[2J")
+            console.out("\033[H\033[2J", end='')
 
     with open(args.filename, 'rb') as fp:
         settings_parsed = load(fp)
 
     computed_stats = compute(settings_parsed, args.planet)
 
-    stdout.write(
-        to_jsonl(computed_stats, args.pretty if not args.refresh else False) if args.json else to_table(computed_stats)
-    )
+    if args.json:
+        console.out(
+            to_json(computed_stats, args.pretty if not args.refresh else False),
+            end='\n'
+        )
+    else:
+        console.print(
+            to_table(computed_stats)
+        )
 
 
 def cli() -> None:

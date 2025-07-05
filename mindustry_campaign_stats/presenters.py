@@ -1,8 +1,7 @@
-from mindustry_campaign_stats.stats import Stats, SectorStats, TotalsStats
-from mindustry_campaign_stats.constants import ItemsId
+from mindustry_campaign_stats.constants import ItemIds, ItemColors
+from mindustry_campaign_stats.stats import Stats
 from math import log10, floor
-from tabulate import tabulate
-from typing import List
+from rich.table import Table
 import json
 
 
@@ -39,16 +38,45 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
     return f'{return_value} {suffix}'
 
 
-def to_table(computed_stats: Stats) -> str:
+def to_table(computed_stats: Stats) -> Table:
     date = computed_stats.date.astimezone().strftime('%c')
 
-    table_headers = ['Sector', 'Stat']
+    ret = Table(
+        title=f'{date} - {computed_stats.planet.name}',
+        show_footer=True
+    )
 
-    table_headers.extend([
-        item_id.replace('-', '\n').title() for item_id in ItemsId.get(computed_stats.planet) if computed_stats.totals.storage.items.get(item_id, 0) != 0 and computed_stats.totals.rawProduction.get(item_id, 0) != 0
-    ])
+    # Header
+    ret.add_column(
+        'Sector',
+        footer='Totals'
+    )
 
-    def row_data(sector: SectorStats) -> List:
+    ret.add_column(
+        'Stat',
+        footer=f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nRaw prod. (/m)\nNet prod. (/m)',
+        no_wrap=True
+    )
+
+    for item_id in ItemIds.get(computed_stats.planet):
+         if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
+             continue
+
+         ret.add_column(
+             item_id.replace('-', '\n').title(),
+             footer='\n'.join([
+                humanize_number(computed_stats.totals.storage.items.get(item_id, 0)),
+                humanize_number(computed_stats.totals.rawProduction.get(item_id, 0)),
+                humanize_number(computed_stats.totals.netProduction.get(item_id, 0)),
+            ]),
+             style=ItemColors.get(item_id),
+             header_style=ItemColors.get(item_id),
+             footer_style=ItemColors.get(item_id),
+             no_wrap=True
+         )
+
+    # Body
+    for sector in computed_stats.sectors.values():
         stat_labels_cell = [
             'Available',
             f'Storage ({humanize_number(sector.storage.capacity)})',
@@ -62,12 +90,12 @@ def to_table(computed_stats: Stats) -> str:
         if sector.exports:
             stat_labels_cell.append('Exports (/m)')
 
-        ret = [
-            sector.name,
+        row = [
+            str(sector.name),
             '\n'.join(stat_labels_cell)
         ]
 
-        for item_id in ItemsId.get(computed_stats.planet):
+        for item_id in ItemIds.get(computed_stats.planet):
             if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
                 continue
 
@@ -84,48 +112,21 @@ def to_table(computed_stats: Stats) -> str:
             if item_id in sector.exports:
                 stat_values_cell.append(humanize_number(sector.exports.get(item_id, 0)))
 
-            ret.append(
+            row.append(
                 '\n'.join(stat_values_cell)
             )
 
-        return ret
+        ret.add_row(
+            *row,
+            end_section=True
+        )
 
-    def totals_row_data(totals: TotalsStats) -> List:
-        ret = [
-            'Totals',
-            f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nRaw prod. (/m)\nNet prod. (/m)',
-        ]
-
-        ret.extend([
-            '\n'.join([
-                humanize_number(totals.storage.items.get(item_id, 0)),
-                humanize_number(totals.rawProduction.get(item_id, 0)),
-                humanize_number(totals.netProduction.get(item_id, 0)),
-            ]) for item_id in ItemsId.get(computed_stats.planet) if computed_stats.totals.storage.items.get(item_id, 0) != 0 and computed_stats.totals.rawProduction.get(item_id, 0) != 0
-        ])
-
-        return ret
-
-    table_data = [
-        row_data(sector) for sector in computed_stats.sectors.values()
-    ]
-
-    table_data.append(
-        totals_row_data(computed_stats.totals)
-    )
-
-    table_str = tabulate(
-        table_data,
-        table_headers,
-        'rounded_grid'
-    )
-
-    return f'{date} - {computed_stats.planet.name}\n{table_str}\n'
+    return ret
 
 
-def to_jsonl(computed_stats: Stats, pretty: bool) -> str:
+def to_json(computed_stats: Stats, pretty: bool) -> str:
     return json.dumps(
         computed_stats.to_dict(),
         indent=2 if pretty else None,
         separators=None if pretty else (',', ':')
-    ) + '\n'
+    )

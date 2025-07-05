@@ -6,7 +6,7 @@ class Planet(StrEnum):
     Erekir = 'erekir'
 
 
-SectorsName = {
+SectorNames = {
     Planet.Serpulo: {
         1: 'Atolls',
         3: 'Testing Grounds',
@@ -60,7 +60,7 @@ SectorsName = {
     },
 }
 
-ItemsId = {
+ItemIds = {
     Planet.Serpulo: [
         'blast-compound',
         'coal',
@@ -92,4 +92,29 @@ ItemsId = {
         'silicon',
         'surge-alloy',
     ]
+}
+
+ItemColors = {
+    'beryllium': '#3a8f64',
+    'blast-compound': '#ff795e',
+    'carbide': '#89769a',
+    'coal': '#53565c', # Real: #272727
+    'copper': '#d99d73',
+    # 'dormant-cyst': '#df824d',
+    # 'fissile-matter': '#5e988d',
+    'graphite': '#b2c6d2',
+    'lead': '#8c7fa9',
+    'metaglass': '#ebeef5',
+    'oxide': '#e4ffd6',
+    'phase-fabric': '#f4ba6e',
+    'plastanium': '#cbd97f',
+    'pyratite': '#ffaa5f',
+    'scrap': '#777777',
+    'sand': '#f7cba4',
+    'thorium': '#f9a3c7',
+    'titanium': '#8da1e3',
+    'tungsten': '#768a9a',
+    'silicon': '#53565c',
+    'spore-pod': '#7457ce',
+    'surge-alloy': '#f3e979',
 }

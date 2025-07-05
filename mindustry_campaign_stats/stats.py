@@ -1,4 +1,4 @@
-from mindustry_campaign_stats.constants import Planet, SectorsName, ItemsId
+from mindustry_campaign_stats.constants import Planet, SectorNames, ItemIds
 from datetime import datetime, timezone
 from typing import Dict, List, Union
 import dataclasses
@@ -62,7 +62,7 @@ class StatsBuilder:
 	def build_sectors(self) -> Dict:
 		return {
 			sector_id: SectorStats(
-				name=SectorsName.get(self.planet).get(sector_id, sector_id),
+				name=SectorNames.get(self.planet).get(sector_id, sector_id),
 				availability=sector_info.get('resources', []),
 				storage=StorageStats(
 					capacity=sector_info.get('storageCapacity', 0),
@@ -92,18 +92,18 @@ class StatsBuilder:
 				items={
 					item_id: sum([
 						sector_info.get('items', {}).get(item_id, 0) for sector_info in self.sectors_info.values()
-					]) for item_id in ItemsId.get(self.planet)
+					]) for item_id in ItemIds.get(self.planet)
 				}
 			),
 			rawProduction={
 				item_id: sum([
 					sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0)
-				]) for item_id in ItemsId.get(self.planet)
+				]) for item_id in ItemIds.get(self.planet)
 			},
 			netProduction={
 				item_id: sum([
 					sector_info.get('production', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in self.sectors_info.values() if sector_info.get('production', {}).get(item_id, {}).get('mean', 0)
-				]) for item_id in ItemsId.get(self.planet)
+				]) for item_id in ItemIds.get(self.planet)
 			}
 		)
 

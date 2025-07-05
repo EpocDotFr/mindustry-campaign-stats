@@ -16,7 +16,7 @@ REQUIRES_PYTHON = '>=3.10'
 VERSION = None  # Pulled from mindustry_campaign_stats/__version__.py
 
 REQUIRED = [
-    'tabulate~=0.9',
+    'rich~=14.0',
     'mutf8~=1.0',
     'py-ubjson~=0.16',
     'watchdog~=6.0',
