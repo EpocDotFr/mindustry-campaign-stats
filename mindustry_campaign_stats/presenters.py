@@ -91,7 +91,7 @@ def to_table(computed_stats: Stats) -> Table:
             stat_labels_cell.append('Exports (/m)')
 
         row = [
-            str(sector.name),
+            str(sector.name).replace(' ', '\n'),
             '\n'.join(stat_labels_cell)
         ]
 
