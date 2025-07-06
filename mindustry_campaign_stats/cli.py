@@ -87,7 +87,7 @@ def cli() -> None:
 
         observer.schedule(
             SettingsModifiedHandler(patterns=[os.path.basename(args.filename)], ignore_directories=True),
-            os.path.dirname(args.filename),
+            os.path.dirname(args.filename) or './',
             recursive=False
         )
 
