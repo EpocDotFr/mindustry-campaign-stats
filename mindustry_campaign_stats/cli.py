@@ -8,8 +8,6 @@ from argparse import ArgumentParser, Namespace
 from watchdog.observers import Observer
 from rich.console import Console
 from time import sleep
-import subprocess
-import platform
 import os
 
 console = Console()
@@ -17,10 +15,7 @@ console = Console()
 
 def show(args: Namespace) -> None:
     if not args.json and args.refresh:
-        if platform.system() == 'Windows' and platform.release() not in ('10', '11', 'post11'):
-            subprocess.run('cls')
-        else:
-            console.out("\033[H\033[2J", end='')
+        console.clear()
 
     with open(args.filename, 'rb') as fp:
         settings_parsed = load(fp)
