@@ -62,7 +62,7 @@ class StatsBuilder:
 	def build_sectors(self) -> Dict:
 		return {
 			sector_id: SectorStats(
-				name=SectorNames.get(self.planet).get(sector_id, sector_id),
+				name=SectorNames.get(self.planet).get(sector_id, str(sector_id)),
 				availability=sector_info.get('resources', []),
 				storage=StorageStats(
 					capacity=sector_info.get('storageCapacity', 0),
