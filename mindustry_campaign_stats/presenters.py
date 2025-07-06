@@ -76,7 +76,7 @@ def to_table(computed_stats: Stats) -> Table:
          )
 
     # Body
-    for sector in computed_stats.sectors.values():
+    for sector in sorted(computed_stats.sectors.values(), key=lambda sector: sector.name):
         stat_labels_cell = [
             'Available',
             f'Storage ({humanize_number(sector.storage.capacity)})',
