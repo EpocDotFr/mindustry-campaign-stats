@@ -100,7 +100,7 @@ def to_table(computed_stats: Stats) -> Table:
                 continue
 
             stat_values_cell = [
-                '✓' if item_id in sector.availability else '✕',
+                '[green]✓[/green]' if item_id in sector.availability else '[red]✕[/red]',
                 humanize_number(sector.storage.items.get(item_id, 0)),
                 humanize_number(sector.rawProduction.get(item_id, 0)),
                 humanize_number(sector.netProduction.get(item_id, 0)),
