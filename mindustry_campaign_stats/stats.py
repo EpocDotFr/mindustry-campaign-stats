@@ -75,7 +75,7 @@ class StatsBuilder:
 					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('production', {}).items()
 				},
 				imports={
-					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('import', {}).items()
+					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('imports', {}).items()
 				},
 				exports={
 					item_id: item_info.get('mean', 0) * 60 for item_id, item_info in sector_info.get('export', {}).items()
