@@ -59,21 +59,21 @@ def to_table(computed_stats: Stats) -> Table:
     )
 
     for item_id in ItemIds.get(computed_stats.planet):
-         if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
-             continue
+        if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
+            continue
 
-         ret.add_column(
-             item_id.replace('-', '\n').title(),
-             footer='\n'.join([
+        ret.add_column(
+            item_id.replace('-', '\n').title(),
+            footer='\n'.join([
                 humanize_number(computed_stats.totals.storage.items.get(item_id, 0)),
                 humanize_number(computed_stats.totals.rawProduction.get(item_id, 0)),
                 humanize_number(computed_stats.totals.netProduction.get(item_id, 0)),
             ]),
-             style=ItemColors.get(item_id),
-             header_style=ItemColors.get(item_id),
-             footer_style=ItemColors.get(item_id),
-             no_wrap=True
-         )
+            style=ItemColors.get(item_id),
+            header_style=ItemColors.get(item_id),
+            footer_style=ItemColors.get(item_id),
+            no_wrap=True
+        )
 
     # Body
     for sector in sorted(computed_stats.sectors.values(), key=lambda sector: sector.name):
