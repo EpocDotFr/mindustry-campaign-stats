@@ -7,6 +7,7 @@ from mindustry_campaign_stats.stats import compute
 from argparse import ArgumentParser, Namespace
 from watchdog.observers import Observer
 from rich.console import Console
+from threading import Timer
 from time import sleep
 import os
 
@@ -80,8 +81,17 @@ def cli() -> None:
 
     if args.refresh:
         class SettingsModifiedHandler(PatternMatchingEventHandler):
+            def __init__(self, *args, **kvargs):
+                super().__init__(*args, **kvargs)
+
+                self.timer = None
+
             def on_modified(self, event: FileModifiedEvent):
-                show(args)
+                if self.timer:
+                    self.timer.cancel()
+
+                self.timer = Timer(2.0, lambda args: show(args), args=[args])
+                self.timer.start()
 
         observer = Observer()
 
