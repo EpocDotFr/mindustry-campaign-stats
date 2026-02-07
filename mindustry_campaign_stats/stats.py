@@ -53,14 +53,26 @@ class Stats:
 class StatsBuilder:
     settings: Dict[str, Union[bool, float, int, bytes, str]]
     planet: Planet
+    items: Optional[List[str]] = None
+    sectors: Optional[List[str]] = None
 
-    sectors_info: Dict[int, Dict]
+    eligible_sectors: Dict[int, Dict]
+    eligible_items: List[str]
 
-    def __init__(self, settings: Dict[str, Union[bool, float, int, bytes, str]], planet: Planet):
+    def __init__(
+        self,
+        settings: Dict[str, Union[bool, float, int, bytes, str]],
+        planet: Planet,
+        items: Optional[List[str]] = None,
+        sectors: Optional[List[str]] = None
+    ):
         self.settings = settings
         self.planet = planet
+        self.items = items
+        self.sectors = sectors
 
-        self.sectors_info = self.get_sectors_info()
+        self.eligible_sectors = self.get_eligible_sectors()
+        self.eligible_items = self.get_eligible_items()
 
     def build_sectors(self) -> Dict:
         return {
@@ -87,36 +99,36 @@ class StatsBuilder:
                     item_id: item_info.get('mean', 0) * 60 for item_id, item_info in
                     sector_info.get('export', {}).items()
                 }
-            ) for sector_id, sector_info in self.sectors_info.items()
+            ) for sector_id, sector_info in self.eligible_sectors.items()
         }
 
     def build_totals(self) -> TotalsStats:
         return TotalsStats(
             storage=StorageStats(
                 capacity=sum([
-                    sector_info.get('storageCapacity', 0) for sector_info in self.sectors_info.values()
+                    sector_info.get('storageCapacity', 0) for sector_info in self.eligible_sectors.values()
                 ]),
                 items={
                     item_id: sum([
-                        sector_info.get('items', {}).get(item_id, 0) for sector_info in self.sectors_info.values()
-                    ]) for item_id in ItemIds.get(self.planet)
+                        sector_info.get('items', {}).get(item_id, 0) for sector_info in self.eligible_sectors.values()
+                    ]) for item_id in self.eligible_items
                 }
             ),
             rawProduction={
                 item_id: sum([
                     sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in
-                    self.sectors_info.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0)
-                ]) for item_id in ItemIds.get(self.planet)
+                    self.eligible_sectors.values() if sector_info.get('rawProduction', {}).get(item_id, {}).get('mean', 0)
+                ]) for item_id in self.eligible_items
             },
             netProduction={
                 item_id: sum([
                     sector_info.get('production', {}).get(item_id, {}).get('mean', 0) * 60 for sector_info in
-                    self.sectors_info.values() if sector_info.get('production', {}).get(item_id, {}).get('mean', 0)
-                ]) for item_id in ItemIds.get(self.planet)
+                    self.eligible_sectors.values() if sector_info.get('production', {}).get(item_id, {}).get('mean', 0)
+                ]) for item_id in self.eligible_items
             }
         )
 
-    def get_sectors_info(self) -> Dict[int, Dict]:
+    def get_eligible_sectors(self) -> Dict[int, Dict]:
         sector_name_regex = re.compile(fr'{self.planet.value}-s-(?P<number>\d+)-info')
 
         sectors_info = {}
@@ -129,13 +141,33 @@ class StatsBuilder:
 
             sector_number = int(sector_name_match.groupdict()['number'])
 
+            if self.sectors:
+                sector_name = SectorNames.get(self.planet).get(sector_number, str(sector_number)).lower()
+
+                if not any([name for name in self.sectors if name.lower() in sector_name]):
+                    continue
+
             sectors_info[sector_number] = value
 
         return sectors_info
 
+    def get_eligible_items(self) -> List[str]:
+        if not self.items:
+            return ItemIds.get(self.planet)
 
-def compute(settings: Dict[str, Union[bool, float, int, bytes, str]], planet: Planet, totals_only: bool = False) -> Stats:
-    builder = StatsBuilder(settings, planet)
+        return [
+            item_id for item_id in ItemIds.get(self.planet) if any([name for name in self.items if name.lower() in item_id.lower()])
+        ]
+
+
+def compute(
+        settings: Dict[str, Union[bool, float, int, bytes, str]],
+        planet: Planet,
+        totals_only: bool = False,
+        items: Optional[List[str]] = None,
+        sectors: Optional[List[str]] = None
+) -> Stats:
+    builder = StatsBuilder(settings, planet, items, sectors)
 
     return Stats(
         date=datetime.now(timezone.utc),

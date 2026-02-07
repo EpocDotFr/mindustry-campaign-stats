@@ -21,7 +21,13 @@ def show(args: Namespace) -> None:
     with open(args.filename, 'rb') as fp:
         settings_parsed = load(fp)
 
-    computed_stats = compute(settings_parsed, args.planet, args.totals)
+    computed_stats = compute(
+        settings_parsed,
+        args.planet,
+        args.totals,
+        args.items.split(',') if args.items else None,
+        args.sectors.split(',') if args.sectors else None
+    )
 
     if args.json:
         console.out(
@@ -79,6 +85,16 @@ def cli() -> None:
         '-t', '--totals',
         help='Compute totals only',
         action='store_true'
+    )
+
+    arg_parser.add_argument(
+        '-i', '--items',
+        help='Get stats for these items only (comma-separated list of item names)'
+    )
+
+    arg_parser.add_argument(
+        '-s', '--sectors',
+        help='Get stats for these sectors only (comma-separated list of sector names)'
     )
 
     args = arg_parser.parse_args()

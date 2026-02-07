@@ -51,7 +51,9 @@ try:
     computed = mindustry_campaign_stats.compute(
         raw_settings,
         mindustry_campaign_stats.Planet.Erekir,
-        True # Compute totals only (False by default)
+        True, # Compute totals only (False by default)
+        ['phase'], # Items to filter by
+        ['planetary'] # Sectors to filter by
     )
 
     print(computed.totals.storage.capacity)
@@ -83,6 +85,9 @@ a stream of JSON Lines. Note that `--pretty` is ignored in that case as it would
 There's also the `--totals` option, which computes totals only. In other words, if the `--json` option is given along,
 stats for each sector will not be returned. Without `--json`, a simplified table with only totals will be displayed in
 the terminal output.
+
+Finally, the `--items` and `--sectors` options may be used to get stats for items and sectors matching the given (partial)
+name(s), respectively. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas.
 
 ## `settings.bin` format
 
