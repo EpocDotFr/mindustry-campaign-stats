@@ -1,6 +1,6 @@
 from mindustry_campaign_stats.constants import Planet, SectorNames, ItemIds
 from datetime import datetime, timezone
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 import dataclasses
 import re
 
@@ -35,14 +35,17 @@ class TotalsStats(StorageAndProductionStatsMixin):
 class Stats:
     date: datetime
     planet: Planet
-    sectors: Dict[int, SectorStats]
     totals: TotalsStats
+    sectors: Optional[Dict[int, SectorStats]] = None
 
     def to_dict(self) -> Dict:
         ret = dataclasses.asdict(self)
 
         ret['date'] = ret['date'].isoformat()
         ret['planet'] = ret['planet'].value
+
+        if not ret['sectors']:
+            del ret['sectors']
 
         return ret
 
@@ -131,12 +134,12 @@ class StatsBuilder:
         return sectors_info
 
 
-def compute(settings: Dict[str, Union[bool, float, int, bytes, str]], planet: Planet) -> Stats:
+def compute(settings: Dict[str, Union[bool, float, int, bytes, str]], planet: Planet, totals_only: bool = False) -> Stats:
     builder = StatsBuilder(settings, planet)
 
     return Stats(
         date=datetime.now(timezone.utc),
         planet=planet,
-        sectors=builder.build_sectors(),
-        totals=builder.build_totals()
+        totals=builder.build_totals(),
+        sectors=builder.build_sectors() if not totals_only else None
     )

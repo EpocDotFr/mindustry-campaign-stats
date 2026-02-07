@@ -42,84 +42,109 @@ def to_table(computed_stats: Stats) -> Table:
     date = computed_stats.date.astimezone().strftime('%c')
 
     ret = Table(
-        title=f'{date} - {computed_stats.planet.name}',
-        show_footer=True
+        title=f'{date} - {computed_stats.planet.name}'
     )
 
-    # Header
-    ret.add_column(
-        'Sector',
-        footer='Totals'
-    )
-
-    ret.add_column(
-        'Stat',
-        footer=f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nRaw prod. (/m)\nNet prod. (/m)',
-        no_wrap=True
-    )
-
-    for item_id in ItemIds.get(computed_stats.planet):
-        if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
-            continue
-
-        ret.add_column(
-            item_id.replace('-', '\n').title(),
-            footer='\n'.join([
-                humanize_number(computed_stats.totals.storage.items.get(item_id, 0)),
-                humanize_number(computed_stats.totals.rawProduction.get(item_id, 0)),
-                humanize_number(computed_stats.totals.netProduction.get(item_id, 0)),
-            ]),
-            style=ItemColors.get(item_id),
-            header_style=ItemColors.get(item_id),
-            footer_style=ItemColors.get(item_id),
-            no_wrap=True
-        )
-
-    # Body
-    for sector in sorted(computed_stats.sectors.values(), key=lambda sector: sector.name):
-        stat_labels_cell = [
-            'Available',
-            f'Storage ({humanize_number(sector.storage.capacity)})',
-            'Raw prod. (/m)',
-            'Net prod. (/m)',
-        ]
-
-        if sector.imports:
-            stat_labels_cell.append('Imports (/m)')
-
-        if sector.exports:
-            stat_labels_cell.append('Exports (/m)')
-
-        row = [
-            str(sector.name).replace(' ', '\n'),
-            '\n'.join(stat_labels_cell)
-        ]
+    if not computed_stats.sectors: # Totals only mode
+        # Header
+        ret.add_column('Item')
+        ret.add_column('Storage')
+        ret.add_column('Raw production (/m)')
+        ret.add_column('Net production (/m)')
 
         for item_id in ItemIds.get(computed_stats.planet):
             if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
                 continue
 
-            stat_values_cell = [
-                '[green]✓[/green]' if item_id in sector.availability else '[red]✕[/red]',
-                humanize_number(sector.storage.items.get(item_id, 0)),
-                humanize_number(sector.rawProduction.get(item_id, 0)),
-                humanize_number(sector.netProduction.get(item_id, 0)),
+            row = [
+                item_id.replace('-', ' ').title(),
+                humanize_number(computed_stats.totals.storage.items.get(item_id, 0)),
+                humanize_number(computed_stats.totals.rawProduction.get(item_id, 0)),
+                humanize_number(computed_stats.totals.netProduction.get(item_id, 0)),
             ]
 
-            if item_id in sector.imports:
-                stat_values_cell.append(humanize_number(sector.imports.get(item_id, 0)))
+            ret.add_row(
+                *row,
+                style=ItemColors.get(item_id),
+                end_section=True
+            )
+    else: # Normal mode
+        ret.show_footer = True
 
-            if item_id in sector.exports:
-                stat_values_cell.append(humanize_number(sector.exports.get(item_id, 0)))
+        # Header
+        ret.add_column(
+            'Sector',
+            footer='Totals'
+        )
 
-            row.append(
-                '\n'.join(stat_values_cell)
+        ret.add_column(
+            'Stat',
+            footer=f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})\nRaw prod. (/m)\nNet prod. (/m)',
+            no_wrap=True
+        )
+
+        for item_id in ItemIds.get(computed_stats.planet):
+            if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
+                continue
+
+            ret.add_column(
+                item_id.replace('-', '\n').title(),
+                footer='\n'.join([
+                    humanize_number(computed_stats.totals.storage.items.get(item_id, 0)),
+                    humanize_number(computed_stats.totals.rawProduction.get(item_id, 0)),
+                    humanize_number(computed_stats.totals.netProduction.get(item_id, 0)),
+                ]),
+                style=ItemColors.get(item_id),
+                header_style=ItemColors.get(item_id),
+                footer_style=ItemColors.get(item_id),
+                no_wrap=True
             )
 
-        ret.add_row(
-            *row,
-            end_section=True
-        )
+        # Body
+        for sector in sorted(computed_stats.sectors.values(), key=lambda sector: sector.name):
+            stat_labels_cell = [
+                'Available',
+                f'Storage ({humanize_number(sector.storage.capacity)})',
+                'Raw prod. (/m)',
+                'Net prod. (/m)',
+            ]
+
+            if sector.imports:
+                stat_labels_cell.append('Imports (/m)')
+
+            if sector.exports:
+                stat_labels_cell.append('Exports (/m)')
+
+            row = [
+                str(sector.name).replace(' ', '\n'),
+                '\n'.join(stat_labels_cell)
+            ]
+
+            for item_id in ItemIds.get(computed_stats.planet):
+                if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
+                    continue
+
+                stat_values_cell = [
+                    '[green]✓[/green]' if item_id in sector.availability else '[red]✕[/red]',
+                    humanize_number(sector.storage.items.get(item_id, 0)),
+                    humanize_number(sector.rawProduction.get(item_id, 0)),
+                    humanize_number(sector.netProduction.get(item_id, 0)),
+                ]
+
+                if item_id in sector.imports:
+                    stat_values_cell.append(humanize_number(sector.imports.get(item_id, 0)))
+
+                if item_id in sector.exports:
+                    stat_values_cell.append(humanize_number(sector.exports.get(item_id, 0)))
+
+                row.append(
+                    '\n'.join(stat_values_cell)
+                )
+
+            ret.add_row(
+                *row,
+                end_section=True
+            )
 
     return ret
 

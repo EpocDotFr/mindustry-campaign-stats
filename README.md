@@ -50,7 +50,8 @@ try:
 
     computed = mindustry_campaign_stats.compute(
         raw_settings,
-        mindustry_campaign_stats.Planet.Erekir
+        mindustry_campaign_stats.Planet.Erekir,
+        True # Compute totals only (False by default)
     )
 
     print(computed.totals.storage.capacity)
@@ -78,6 +79,10 @@ before any update happens).
 The `--json` option switches output format to JSON, specifically [JSON Lines](https://jsonlines.org/). The `--pretty`
 option may be used to pretty-print the outputted JSON. When `--refresh` is set as well, the CLI will sequentially write
 a stream of JSON Lines. Note that `--pretty` is ignored in that case as it would break JSON Lines formatting.
+
+There's also the `--totals` option, which computes totals only. In other words, if the `--json` option is given along,
+stats for each sector will not be returned. Without `--json`, a simplified table with only totals will be displayed in
+the terminal output.
 
 ## `settings.bin` format
 

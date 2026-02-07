@@ -21,7 +21,7 @@ def show(args: Namespace) -> None:
     with open(args.filename, 'rb') as fp:
         settings_parsed = load(fp)
 
-    computed_stats = compute(settings_parsed, args.planet)
+    computed_stats = compute(settings_parsed, args.planet, args.totals)
 
     if args.json:
         console.out(
@@ -72,6 +72,12 @@ def cli() -> None:
     arg_parser.add_argument(
         '-r', '--refresh',
         help='Listen for file changes',
+        action='store_true'
+    )
+
+    arg_parser.add_argument(
+        '-t', '--totals',
+        help='Compute totals only',
         action='store_true'
     )
 
