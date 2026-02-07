@@ -54,7 +54,7 @@ def cli() -> None:
     arg_parser.add_argument(
         '-v', '--version',
         action='version',
-        version=f'parkitect-blueprint-reader {__version__}'
+        version=f'mindustry-campaign-stats {__version__}'
     )
 
     arg_parser.add_argument(
