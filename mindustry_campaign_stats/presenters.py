@@ -26,7 +26,7 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
         value = value / p
         before = int(log10(value)) + 1
         decimal_places = max(0, significant_digits - before)
-        suffix = human_powers[i]
+        suffix = ' ' + human_powers[i]
 
     return_value = ("%." + str(decimal_places) + "f") % value
 
@@ -35,15 +35,17 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
     if strip_trailing_zeros and '.' in return_value:
         return_value = return_value.rstrip('0').rstrip('.')
 
-    return f'{return_value} {suffix}'
+    return f'{return_value}{suffix}'
 
 
-def to_table(computed_stats: Stats) -> Table:
+def to_table(computed_stats: Stats, compact: bool = False) -> Table:
     date = computed_stats.date.astimezone().strftime('%c')
 
     ret = Table(
         title=f'{date} - {computed_stats.planet.name}'
     )
+
+    item_ids = computed_stats.totals.storage.items.keys()
 
     if not computed_stats.sectors: # Totals only mode
         # Header
@@ -52,8 +54,8 @@ def to_table(computed_stats: Stats) -> Table:
         ret.add_column('Raw production (/m)')
         ret.add_column('Net production (/m)')
 
-        for item_id in ItemIds.get(computed_stats.planet):
-            if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
+        for item_id in item_ids:
+            if compact and computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
                 continue
 
             row = [
@@ -83,8 +85,10 @@ def to_table(computed_stats: Stats) -> Table:
             no_wrap=True
         )
 
-        for item_id in ItemIds.get(computed_stats.planet):
-            if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
+        sector_item_ids = []
+
+        for item_id in item_ids:
+            if compact and computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
                 continue
 
             ret.add_column(
@@ -100,8 +104,30 @@ def to_table(computed_stats: Stats) -> Table:
                 no_wrap=True
             )
 
+            sector_item_ids.append(item_id)
+
         # Body
         for sector in sorted(computed_stats.sectors.values(), key=lambda sector: sector.name):
+            if compact:
+                items_unavailable_anywhere = len([
+                    item_id for item_id in sector_item_ids if item_id not in sector.availability
+                ]) == len(sector_item_ids)
+
+                items_storage_empty = sum([
+                    sector.storage.items.get(item_id, 0) for item_id in sector_item_ids
+                ]) == 0
+
+                no_raw_production = sum([
+                    sector.rawProduction.get(item_id, 0) for item_id in sector_item_ids
+                ]) == 0
+
+                no_net_production = sum([
+                    sector.netProduction.get(item_id, 0) for item_id in sector_item_ids
+                ]) == 0
+
+                if items_unavailable_anywhere and items_storage_empty and no_raw_production and no_net_production:
+                    continue
+
             stat_labels_cell = [
                 'Available',
                 f'Storage ({humanize_number(sector.storage.capacity)})',
@@ -120,10 +146,7 @@ def to_table(computed_stats: Stats) -> Table:
                 '\n'.join(stat_labels_cell)
             ]
 
-            for item_id in ItemIds.get(computed_stats.planet):
-                if computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
-                    continue
-
+            for item_id in sector_item_ids:
                 stat_values_cell = [
                     '[green]✓[/green]' if item_id in sector.availability else '[red]✕[/red]',
                     humanize_number(sector.storage.items.get(item_id, 0)),

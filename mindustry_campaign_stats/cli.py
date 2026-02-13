@@ -36,7 +36,7 @@ def show(args: Namespace) -> None:
         )
     else:
         console.print(
-            to_table(computed_stats)
+            to_table(computed_stats, args.compact)
         )
 
 
@@ -95,6 +95,12 @@ def cli() -> None:
     arg_parser.add_argument(
         '-s', '--sectors',
         help='Get stats for these sectors only (comma-separated list of sector names)'
+    )
+
+    arg_parser.add_argument(
+        '-c', '--compact',
+        help='Hide empty and useless stats',
+        action='store_true'
     )
 
     args = arg_parser.parse_args()
