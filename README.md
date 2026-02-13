@@ -82,7 +82,7 @@ The `--json` option switches output format to JSON, specifically [JSON Lines](ht
 option may be used to pretty-print the outputted JSON. When `--refresh` is set as well, the CLI will sequentially write
 a stream of JSON Lines. Note that `--pretty` is ignored in that case as it would break JSON Lines formatting.
 
-The `--compact` option will enable compact mode: useless rows and columns (typicall having all values equal to zero)
+The `--compact` option will enable compact mode: useless rows and columns (typically having all values equal to zero)
 will not be shown.
 
 There's also the `--totals` option, which computes totals only. In other words, if the `--json` option is given along,
