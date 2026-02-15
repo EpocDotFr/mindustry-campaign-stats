@@ -72,9 +72,9 @@ Several options are available to customize its output. Please read below.
 
 #### Common options
 
-| Name        | Effect                                                                                                                                 |
-|-------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| `--refresh` | The CLI is running indefinitely, listening for modification in the given `settings.bin`file until it's terminated (<kbd>CTRL+C</kbd>). |
+| Name        | Effect                                                                                                                                                                                                                                 |
+|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--refresh` | The CLI is running indefinitely, listening for modification in the given `settings.bin`file until it's terminated (<kbd>CTRL+C</kbd>). This option implies different behavior changes in function of output format (documented below). |
 
 #### ASCII table options
 
@@ -88,7 +88,7 @@ Several options are available to customize its output. Please read below.
 When `--refresh` is set as well, the table will be automatically updated in your terminal (screen is cleared before any
 update happens).
 
-#### JSON
+#### JSON options
 
 | Name       | Effect                                                                             |
 |------------|------------------------------------------------------------------------------------|
