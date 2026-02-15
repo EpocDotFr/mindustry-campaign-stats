@@ -72,16 +72,16 @@ Several options are available to customize its output. Please read below.
 
 #### Common options
 
-| Name        | Effect                                                                                                                                                                                                                                 |
-|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--refresh` | The CLI is running indefinitely, listening for modification in the given `settings.bin`file until it's terminated (<kbd>CTRL+C</kbd>). This option implies different behavior changes in function of output format (documented below). |
+| Name        | Effect                                                                                                                                                                                                                          |
+|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--refresh` | Run the CLI indefinitely, listening for modification in the given `settings.bin`file until it's terminated (<kbd>CTRL+C</kbd>). This option implies different behavior changes in function of output format (documented below). |
 
 #### ASCII table options
 
 | Name        | Effect                                                                                                                                                     |
 |-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `--compact` | Enable compact mode: useless rows and columns (typically having all values equal to zero) will not be shown.                                               |
-| `--totals`  | Displays a simplified table with totals only.                                                                                                              |
+| `--totals`  | Display a simplified table with totals only.                                                                                                               |
 | `--items`   | Display stats for the given (partial) item names only. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas.   |
 | `--sectors` | Display stats for the given (partial) sector names only. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas. |
 
