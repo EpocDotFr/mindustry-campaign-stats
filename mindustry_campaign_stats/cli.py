@@ -21,13 +21,7 @@ def show(args: Namespace) -> None:
     with open(args.filename, 'rb') as fp:
         settings_parsed = load(fp)
 
-    computed_stats = compute(
-        settings_parsed,
-        args.planet,
-        args.totals,
-        args.items.split(',') if args.items else None,
-        args.sectors.split(',') if args.sectors else None
-    )
+    computed_stats = compute(settings_parsed, args.planet)
 
     if args.json:
         console.out(
@@ -36,7 +30,13 @@ def show(args: Namespace) -> None:
         )
     else:
         console.print(
-            to_table(computed_stats, args.compact)
+            to_table(
+                computed_stats,
+                args.compact,
+                args.totals,
+                args.items.split(',') if args.items else None,
+                args.sectors.split(',') if args.sectors else None
+            )
         )
 
 

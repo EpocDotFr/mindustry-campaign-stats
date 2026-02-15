@@ -48,13 +48,7 @@ try:
 
     pprint(raw_settings)
 
-    computed = mindustry_campaign_stats.compute(
-        raw_settings,
-        mindustry_campaign_stats.Planet.Erekir,
-        True, # Compute totals only (False by default)
-        ['phase'], # Items to filter by
-        ['planetary'] # Sectors to filter by
-    )
+    computed = mindustry_campaign_stats.compute(raw_settings, mindustry_campaign_stats.Planet.Erekir)
 
     print(computed.totals.storage.capacity)
 

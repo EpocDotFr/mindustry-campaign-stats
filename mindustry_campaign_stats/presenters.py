@@ -1,5 +1,6 @@
-from mindustry_campaign_stats.constants import ItemIds, ItemColors
+from mindustry_campaign_stats.constants import ItemColors, ItemIds
 from mindustry_campaign_stats.stats import Stats
+from typing import Optional, List
 from math import log10, floor
 from rich.table import Table
 import json
@@ -38,22 +39,31 @@ def humanize_number(value, significant_digits=3, strip_trailing_zeros=True):
     return f'{return_value}{suffix}'
 
 
-def to_table(computed_stats: Stats, compact: bool = False) -> Table:
+def to_table(
+    computed_stats: Stats,
+    compact: bool = False,
+    totals_only: bool = False,
+    filter_items: Optional[List[str]] = None,
+    filter_sectors: Optional[List[str]] = None
+) -> Table:
     date = computed_stats.date.astimezone().strftime('%c')
 
     ret = Table(
         title=f'{date} - {computed_stats.planet.name}'
     )
 
-    item_ids = computed_stats.totals.storage.items.keys()
+    item_ids = [
+        item_id for item_id in ItemIds.get(computed_stats.planet) if any([name for name in filter_items if name.lower() in item_id.lower()])
+    ] if filter_items else ItemIds.get(computed_stats.planet)
 
-    if not computed_stats.sectors: # Totals only mode
+    if totals_only:
         # Header
         ret.add_column('Item')
         ret.add_column('Storage')
         ret.add_column('Raw production (/m)')
         ret.add_column('Net production (/m)')
 
+        # Body
         for item_id in item_ids:
             if compact and computed_stats.totals.storage.items.get(item_id, 0) == 0 and computed_stats.totals.rawProduction.get(item_id, 0) == 0:
                 continue
@@ -70,7 +80,7 @@ def to_table(computed_stats: Stats, compact: bool = False) -> Table:
                 style=ItemColors.get(item_id),
                 end_section=True
             )
-    else: # Normal mode
+    else:
         ret.show_footer = True
 
         # Header
@@ -108,6 +118,9 @@ def to_table(computed_stats: Stats, compact: bool = False) -> Table:
 
         # Body
         for sector in sorted(computed_stats.sectors.values(), key=lambda sector: sector.name):
+            if filter_sectors and not any([name for name in filter_sectors if name.lower() in sector.name.lower()]):
+                continue
+
             if compact:
                 items_unavailable_anywhere = len([
                     item_id for item_id in sector_item_ids if item_id not in sector.availability
