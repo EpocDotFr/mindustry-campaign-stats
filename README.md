@@ -68,23 +68,35 @@ of computed stats to `stdout`. Note you must choose between the `serpulo` or `er
 mindustry-campaign-stats settings.bin erekir
 ```
 
-When the `--refresh` option is set, the CLI is running indefinitely, listening for modification in the given `settings.bin`
-file until it's terminated. This feature allows the table to be automatically updated in your terminal (screen is cleared
-before any update happens).
+Several options are available to customize its output. Please read below.
 
-The `--json` option switches output format to JSON, specifically [JSON Lines](https://jsonlines.org/). The `--pretty`
-option may be used to pretty-print the outputted JSON. When `--refresh` is set as well, the CLI will sequentially write
-a stream of JSON Lines. Note that `--pretty` is ignored in that case as it would break JSON Lines formatting.
+#### Common options
 
-The `--compact` option will enable compact mode: useless rows and columns (typically having all values equal to zero)
-will not be shown.
+| Name        | Effect                                                                                                                                 |
+|-------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `--refresh` | The CLI is running indefinitely, listening for modification in the given `settings.bin`file until it's terminated (<kbd>CTRL+C</kbd>). |
 
-There's also the `--totals` option, which computes totals only. In other words, if the `--json` option is given along,
-stats for each sector will not be returned. Without `--json`, a simplified table with only totals will be displayed in
-the terminal output.
+#### ASCII table options
 
-Finally, the `--items` and `--sectors` options may be used to get stats for items and sectors matching the given (partial)
-name(s), respectively. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas.
+| Name        | Effect                                                                                                                                                     |
+|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--compact` | Enable compact mode: useless rows and columns (typically having all values equal to zero) will not be shown.                                               |
+| `--totals`  | Displays a simplified table with totals only.                                                                                                              |
+| `--items`   | Display stats for the given (partial) item names only. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas.   |
+| `--sectors` | Display stats for the given (partial) sector names only. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas. |
+
+When `--refresh` is set as well, the table will be automatically updated in your terminal (screen is cleared before any
+update happens).
+
+#### JSON
+
+| Name       | Effect                                                                             |
+|------------|------------------------------------------------------------------------------------|
+| `--json`   | Switches output format to JSON, specifically [JSON Lines](https://jsonlines.org/). |
+| `--pretty` | Pretty-print the outputted JSON (ignored if `--refresh` is set as well).           |
+
+When `--refresh` is set as well, a stream of JSON Lines will be sequentially written. Note that `--pretty` is ignored
+in that case as it would break JSON Lines formatting.
 
 ## `settings.bin` format
 
