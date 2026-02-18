@@ -72,23 +72,29 @@ Several options are available to customize its output. Please read below.
 
 #### Common options
 
+These apply to all output formats.
+
 | Name        | Effect                                                                                                                                                                                                                          |
 |-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `--refresh` | Run the CLI indefinitely, listening for modification in the given `settings.bin`file until it's terminated (<kbd>CTRL+C</kbd>). This option implies different behavior changes in function of output format (documented below). |
 
 #### ASCII table options
 
-| Name        | Effect                                                                                                                                                     |
-|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `--compact` | Enable compact mode: useless rows and columns (typically having all values equal to zero) will not be shown.                                               |
-| `--totals`  | Display a simplified table with totals only.                                                                                                               |
-| `--items`   | Display stats for the given (partial) item names only. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas.   |
-| `--sectors` | Display stats for the given (partial) sector names only. Match is done in a case-insensitive fashion, and multiple names may be given separated by commas. |
+These apply to the default output format.
 
-When `--refresh` is set as well, the table will be automatically updated in your terminal (screen is cleared before any
+| Name        | Effect                                                                                                                                                        |
+|-------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `--compact` | Enable compact mode: useless rows and columns (typically having all values equal to zero) will not be shown.                                                  |
+| `--totals`  | Display a simplified table with totals only.                                                                                                                  |
+| `--items`   | Display stats for the given (partial) item names only. Matching is done in a case-insensitive fashion, and multiple names may be given separated by commas.   |
+| `--sectors` | Display stats for the given (partial) sector names only. Matching is done in a case-insensitive fashion, and multiple names may be given separated by commas. |
+
+When `--refresh` is set as well, the table will be automatically updated in your terminal (the screen is cleared before any
 update happens).
 
 #### JSON options
+
+These apply to the JSON output format.
 
 | Name       | Effect                                                                             |
 |------------|------------------------------------------------------------------------------------|
