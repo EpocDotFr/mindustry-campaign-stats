@@ -59,7 +59,7 @@ def to_table(
     if totals_only:
         # Header
         ret.add_column('Item')
-        ret.add_column('Storage')
+        ret.add_column(f'Storage ({humanize_number(computed_stats.totals.storage.capacity)})')
         ret.add_column('Raw production (/m)')
         ret.add_column('Net production (/m)')
 

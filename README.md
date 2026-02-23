@@ -96,13 +96,12 @@ update happens).
 
 These apply to the JSON output format.
 
-| Name       | Effect                                                                             |
-|------------|------------------------------------------------------------------------------------|
-| `--json`   | Switches output format to JSON, specifically [JSON Lines](https://jsonlines.org/). |
-| `--pretty` | Pretty-print the outputted JSON (ignored if `--refresh` is set as well).           |
+| Name       | Effect                                                                                                           |
+|------------|------------------------------------------------------------------------------------------------------------------|
+| `--json`   | Switches output format to JSON, specifically [JSON Lines](https://jsonlines.org/).                               |
+| `--pretty` | Pretty-print the outputted JSON (ignored if `--refresh` is set as well as it would break JSON Lines formatting). |
 
-When `--refresh` is set as well, a stream of JSON Lines will be sequentially written. Note that `--pretty` is ignored
-in that case as it would break JSON Lines formatting.
+When `--refresh` is set as well, a stream of JSON Lines will be sequentially written to `stdout`.
 
 ## `settings.bin` format
 
