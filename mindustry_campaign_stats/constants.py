@@ -1,26 +1,26 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 
 
 class Planet(StrEnum):
-    Serpulo = 'serpulo'
-    Erekir = 'erekir'
+    Serpulo = auto()
+    Erekir = auto()
 
 
 SectorNames = {
     Planet.Serpulo: {
+        -1: 'Sunken Pier',
         1: 'Atolls',
         3: 'Testing Grounds',
         15: 'Ground Zero',
-        18: 'The Craters',
+        18: 'Cratered Battleground',
         20: 'Stained Mountains',
         21: 'Fungal Pass',
         23: 'Tar Fields',
         39: 'Weathered Channels',
-        47: 'Sea Port',
+        47: 'Perilous Harbor',
         50: 'Frontier',
         54: 'Cruxscape',
         64: 'Facility 32M',
-        # 68: 'Polar Aerodrome',
         81: 'Biomass Synthesis Facility',
         86: 'Frozen Forest',
         93: 'Planetary Launch Terminal',
@@ -30,13 +30,14 @@ SectorNames = {
         130: 'Nuclear Production Complex',
         134: 'Overgrowth',
         165: 'Extraction Outpost',
+        204: 'Littoral Shipyard',
         210: 'Infested Canyons',
         213: 'Ruinous Shores',
         216: 'Naval Fortress',
         221: 'Tainted Woods',
         227: 'Impact 0078',
         246: 'Windswept Islands',
-        260: 'Mycelia Bastion',
+        260: 'Mycelial Bastion',
         264: 'Geothermal Stronghold',
     },
     Planet.Erekir: {
@@ -89,6 +90,7 @@ ItemIds = {
         'phase-fabric',
         'thorium',
         'tungsten',
+        'sand',
         'silicon',
         'surge-alloy',
     ]

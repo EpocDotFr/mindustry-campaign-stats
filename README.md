@@ -9,6 +9,7 @@ Python API and CLI tool to read [Mindustry](https://mindustrygame.github.io/)'s 
 ## Prerequisites
 
   - Python >= 3.10
+  - Mindustry >= 8
 
 ## Installation
 
@@ -131,9 +132,9 @@ data. It is formatted as follows (everything is big-endian):
 
 ## References
 
-  - [Settings.java](https://github.com/Anuken/Arc/blob/v149/arc-core/src/arc/Settings.java)
-  - [SectorPresets.java](https://github.com/Anuken/Mindustry/blob/v149/core/src/mindustry/content/SectorPresets.java)
-  - [Items.java](https://github.com/Anuken/Mindustry/blob/v149/core/src/mindustry/content/Items.java)
+  - [Settings.java](https://github.com/Anuken/Arc/blob/v157.3/arc-core/src/arc/Settings.java)
+  - [SectorPresets.java](https://github.com/Anuken/Mindustry/blob/v157.3/core/src/mindustry/content/SectorPresets.java)
+  - [Items.java](https://github.com/Anuken/Mindustry/blob/v157.3/core/src/mindustry/content/Items.java)
 
 ## Development
 
