@@ -49,12 +49,15 @@ try:
 
     pprint(raw_settings)
 
-    computed = mindustry_campaign_stats.compute(raw_settings, mindustry_campaign_stats.Planet.Erekir)
+    computed = mindustry_campaign_stats.compute(
+        raw_settings,
+        mindustry_campaign_stats.Planet.Erekir
+    )
 
     print(computed.totals.storage.capacity)
 
     pprint(
-      computed.to_dict()
+        computed.to_dict()
     )
 except Exception as e:
     print(e)
