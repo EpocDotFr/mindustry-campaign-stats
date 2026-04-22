@@ -1,43 +1,44 @@
-from enum import StrEnum
+from enum import StrEnum, auto
 
 
 class Planet(StrEnum):
-    Serpulo = 'serpulo'
-    Erekir = 'erekir'
+    Serpulo = auto()
+    Erekir = auto()
 
 
 SectorNames = {
     Planet.Serpulo: {
-        1: 'Atolls',
-        3: 'Testing Grounds',
-        15: 'Ground Zero',
-        18: 'The Craters',
-        20: 'Stained Mountains',
-        21: 'Fungal Pass',
-        23: 'Tar Fields',
-        39: 'Weathered Channels',
-        47: 'Sea Port',
-        50: 'Frontier',
+        23: 'Biomass Synthesis Facility',
+        41: 'Ruinous Shores',
         54: 'Cruxscape',
-        64: 'Facility 32M',
-        # 68: 'Polar Aerodrome',
-        81: 'Biomass Synthesis Facility',
-        86: 'Frozen Forest',
-        93: 'Planetary Launch Terminal',
-        101: 'Salt Flats',
-        108: 'Coastline',
-        123: 'Desolate Rift',
-        130: 'Nuclear Production Complex',
-        134: 'Overgrowth',
-        165: 'Extraction Outpost',
-        210: 'Infested Canyons',
-        213: 'Ruinous Shores',
-        216: 'Naval Fortress',
-        221: 'Tainted Woods',
-        227: 'Impact 0078',
-        246: 'Windswept Islands',
-        260: 'Mycelia Bastion',
+        64: 'Frozen Forest',
+        65: 'Facility 32M',
+        75: 'Atolls',
+        85: 'Infested Canyons',
+        86: 'Frontier',
+        97: 'Windswept Islands',
+        98: 'Salt Flats',
+        99: 'Tar Fields',
+        142: 'Overgrowth',
+        143: 'Mycelial Bastion',
+        145: 'Tainted Woods',
+        164: 'Coastline',
+        165: 'Naval Fortress',
+        166: 'Weathered Channels',
+        169: 'Testing Grounds',
+        170: 'Ground Zero',
+        173: 'Sunken Pier',
+        204: 'Littoral Shipyard',
+        213: 'Extraction Outpost',
+        214: 'Perilous Harbor',
+        217: 'Planetary Launch Terminal',
+        219: 'Cratered Battleground',
+        221: 'Fungal Pass',
+        223: 'Stained Mountains',
+        228: 'Nuclear Production Complex',
         264: 'Geothermal Stronghold',
+        266: 'Impact 0078',
+        271: 'Desolate Rift',
     },
     Planet.Erekir: {
         3: 'Crevice',
@@ -89,6 +90,7 @@ ItemIds = {
         'phase-fabric',
         'thorium',
         'tungsten',
+        'sand',
         'silicon',
         'surge-alloy',
     ]
