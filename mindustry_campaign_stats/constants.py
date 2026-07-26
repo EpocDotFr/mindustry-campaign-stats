@@ -22,7 +22,7 @@ SectorNames = {
         142: 'Overgrowth',
         143: 'Mycelial Bastion',
         145: 'Tainted Woods',
-        164: 'Coastline',
+        164: 'Humid Coastline',
         165: 'Naval Fortress',
         166: 'Weathered Channels',
         169: 'Testing Grounds',
